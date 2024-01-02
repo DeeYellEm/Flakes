@@ -1,11 +1,14 @@
 import pyglet
-from files import thing, load
+from pyglet import image
+from pyglet.gl import *
+
+from files import thing, load, resources
 from collections import namedtuple
 
 # Set up a window
 myWindow = namedtuple('myWindow', ['X', 'Y'])
 myWin = myWindow(800, 600)
-game_window = pyglet.window.Window(myWin.X, myWin.Y)
+game_window = pyglet.window.Window(myWin.X, myWin.Y, visible=True, resizable=False)
 
 main_batch = pyglet.graphics.Batch()
 
@@ -27,9 +30,13 @@ game_objects = []
 event_stack_size = 0
 
 def init():
-    global num_things
+    global num_things, fgpic, fgpicSprite, bgpic, bgpicSprite
 
-    num_things = 4
+    num_things = 10
+    fgpic = pyglet.image.load('../resources/window.png')
+    fgpicSprite = pyglet.sprite.Sprite(fgpic, 0, 0)
+    bgpic = pyglet.image.load('../resources/wintersky.png')
+    bgpicSprite = pyglet.sprite.Sprite(bgpic, 0, 0)
     reset_level()
 
 
@@ -56,7 +63,13 @@ def reset_level():
 @game_window.event
 def on_draw():
     game_window.clear()
+
+    #bgpicSprite.draw()
+
     main_batch.draw()
+
+    #fgpicSprite.draw()
+
     counter.draw()
 
 def update(dt):
@@ -64,17 +77,17 @@ def update(dt):
 
     # To avoid handling collisions twice, we employ nested loops of ranges.
     # This method also avoids the problem of colliding an object with itself.
-    for i in range(len(game_objects)):
-        for j in range(i + 1, len(game_objects)):
+    # for i in range(len(game_objects)):
+        # for j in range(i + 1, len(game_objects)):
+            #
+            # obj_1 = game_objects[i]
 
-            obj_1 = game_objects[i]
-            obj_2 = game_objects[j]
 
             # Make sure the objects haven't already been killed
-            if not obj_1.dead and not obj_2.dead:
-                if obj_1.collides_with(obj_2):
-                    obj_1.handle_collision_with(obj_2)
-                    print('DLM: Obj1 collides with Obj2')
+            # if not obj_1.dead and not obj_2.dead:
+                # if obj_1.collides_with(obj_2):
+                    # obj_1.handle_collision_with(obj_2)
+
 
 
     # Let's not modify the list while traversing it

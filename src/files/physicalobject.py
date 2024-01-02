@@ -9,18 +9,13 @@ class PhysicalObject(pyglet.sprite.Sprite):
     def __init__(self, *args, **kwargs):
         super(PhysicalObject, self).__init__(*args, **kwargs)
 
-        # Location
-        self.x = 1.1
-        self.y = 2.2
-        # Velocity
-        self.vx, self.vy = 3.3, 4.4
+        # Location and Velocity
+        self.x, self.y, self.vx, self.vy = 0,0,0,0
+
+        # Radius and the r and v vectors required for the collision math
         self.radius = 1
         self.r = np.array((self.x, self.y))
         self.v = np.array((self.vx, self.vy))
-
-        # Flags to toggle collision with bullets
-        self.reacts_to_bullets = True
-        self.is_bullet = False
 
         # Flag to remove this object from the game_object list
         self.dead = False
@@ -54,7 +49,7 @@ class PhysicalObject(pyglet.sprite.Sprite):
 
         # Wrap around the screen if necessary
         #self.check_bounds_wrap()
-        self.check_bounds_bounce()
+        self.check_bounds_wrap()
 
     def check_bounds_wrap(self):
         """Wrap around the edges"""
@@ -111,9 +106,9 @@ class PhysicalObject(pyglet.sprite.Sprite):
 
     def handle_collision_with(self, other_object):
         """ Handle the collision between two objects """
-        print('physicalObject.handle_collision_with (pre)')
-        print([self])
-        print([other_object])
+        #print('physicalObject.handle_collision_with (pre)')
+        #print([self])
+        #print([other_object])
 
         m1, m2 = self.radius**2, other_object.radius**2
         M = m1 + m2
@@ -130,9 +125,9 @@ class PhysicalObject(pyglet.sprite.Sprite):
         other_object.vy = other_object.v[1]
         #self.vx,self.vy = self.v[0], self.v[1]
         #other_object.vx, other_object.vy = other_object.v[0], other_object.v[1]
-        print('physicalObject.handle_collision_with (post)')
-        print([self])
-        print([other_object])
+        #print('physicalObject.handle_collision_with (post)')
+        #print([self])
+        #print([other_object])
         #exit()
 
         # We're going to need a sequence of all of the pairs of particles when

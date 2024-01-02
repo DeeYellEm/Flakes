@@ -8,7 +8,7 @@ class Thing(physicalobject.PhysicalObject):
     def __init__(self, *args, **kwargs):
         super(Thing, self).__init__(resources.thing_image, *args, **kwargs)
 
-        print('DLM: self.x: '+str(self.x)+' self.y: '+str(self.y))
+        #print('DLM: self.x: '+str(self.x)+' self.y: '+str(self.y))
         # Slowly rotate the ball as it moves
         self.rotate_speed = random.random() * 100.0 - 50.0
         if (random.random() < 0.5):

@@ -11,3 +11,5 @@ pyglet.resource.reindex()
 
 thing_image = pyglet.resource.image("flake.png")
 center_image(thing_image)
+
+background_pic = pyglet.resource.image("window.png")
