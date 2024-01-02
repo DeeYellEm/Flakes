@@ -4,6 +4,7 @@ from pyglet.gl import *
 
 from files import thing, load, resources
 from collections import namedtuple
+import random
 
 # Set up a window
 myWindow = namedtuple('myWindow', ['X', 'Y'])
@@ -11,6 +12,9 @@ myWin = myWindow(800, 600)
 game_window = pyglet.window.Window(myWin.X, myWin.Y, visible=True, resizable=False)
 
 main_batch = pyglet.graphics.Batch()
+
+# Global Wind
+globalVx = 0.0
 
 # Set up the two top labels
 #score_label = pyglet.text.Label(text="Score: 0", x=10, y=575, batch=main_batch)
@@ -30,18 +34,26 @@ game_objects = []
 event_stack_size = 0
 
 def init():
-    global num_things, fgpic, fgpicSprite, bgpic, bgpicSprite
+    global num_things, fgpic, fgpicSprite, bgpic, bgpicSprite, globalVx
 
     num_things = 10
     fgpic = pyglet.image.load('../resources/window.png')
     fgpicSprite = pyglet.sprite.Sprite(fgpic, 0, 0)
     bgpic = pyglet.image.load('../resources/wintersky.png')
     bgpicSprite = pyglet.sprite.Sprite(bgpic, 0, 0)
+
+    globalVx = random.randrange(20, 80)
+    if (random.random() < 0.5):
+        globalVx = -1*globalVx
+
+    print('DLM: globalVx: '+str(globalVx))
+    pyglet.clock.schedule_interval(timerFunc, 1.5)
+
     reset_level()
 
 
 def reset_level():
-    global game_objects, event_stack_size
+    global game_objects, event_stack_size, globalVx
 
     # Clear the event stack of any remaining handlers from other levels
     while event_stack_size > 0:
@@ -53,11 +65,22 @@ def reset_level():
     # Store all objects that update each frame in a list
     game_objects = things
 
-    # Add any specified event handlers to the event handler stack
+    # Things to do on the game_objects before kickoff
     for obj in game_objects:
+        # Add any specified event handlers to the event handler stack
         for handler in obj.event_handlers:
             game_window.push_handlers(handler)
             event_stack_size += 1
+        obj.vx = (0.4/obj.scale) * globalVx
+
+def timerFunc (dt):
+    globalVx = random.randrange(20, 80)
+    if (random.random() < 0.5):
+        globalVx = -1*globalVx
+    #print('DLM: timerFunc():globalVx: '+str(globalVx))
+    for obj in game_objects:
+        obj.vx = (0.4/obj.scale) * globalVx
+        #print('DLM: timerFunc: obj.scale: '+str(obj.scale)+' obj.vx:'+str(obj.vx))
 
 
 @game_window.event
@@ -73,7 +96,7 @@ def on_draw():
     counter.draw()
 
 def update(dt):
-    global num_things
+    global num_things, globalVx
 
     # To avoid handling collisions twice, we employ nested loops of ranges.
     # This method also avoids the problem of colliding an object with itself.
@@ -93,11 +116,13 @@ def update(dt):
     # Let's not modify the list while traversing it
     to_add = []
 
+
     for obj in game_objects:
         obj.update(dt)
 
         to_add.extend(obj.new_objects)
         obj.new_objects = []
+
 
 if __name__ == "__main__":
     # Start it up!

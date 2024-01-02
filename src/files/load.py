@@ -21,7 +21,8 @@ def things(num_things, myWin, batch=None):
             new_thing.vx = -1*new_thing.vx
 
         # Scale the new thing
-        new_thing.scale = random.uniform(0.4, 1.0)
+        new_thing.scale = random.uniform(0.25, 1.0)
+        #print('DLM:things: new_thing.scale: '+str(new_thing.scale))
 
         #if (random.random() < 0.5):
         #    new_thing.vy = -1*new_thing.vy
